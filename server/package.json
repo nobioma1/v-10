@@ -6,7 +6,11 @@
   "license": "MIT",
   "scripts": {
     "dev:server": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "db:rollback:all": "npx knex migrate:rollback",
+    "db:migrate": "npx knex migrate:latest",
+    "db:reset": "npm run db:rollback:all && npm run db:migrate",
+    "db:seed": "npx knex seed:run"
   },
   "dependencies": {
     "cors": "^2.8.5",

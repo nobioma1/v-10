@@ -1,6 +1,4 @@
-let cache = {};
-
-function filterCarOwners(carOwners, filter) {
+function filterCarOwners(carOwners, filter, cache = {}) {
   // If there is a change in number of car owners reset cache
   if (cache.carOwnerLength && cache.carOwnerLength !== carOwners.length) {
     cache = {};

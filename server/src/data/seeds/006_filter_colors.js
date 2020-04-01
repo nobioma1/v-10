@@ -23,7 +23,7 @@ exports.seed = knex => {
         { id: 18, filter_id: 2, color_id: 8 },
         { id: 19, filter_id: 2, color_id: 9 },
         { id: 20, filter_id: 2, color_id: 10 },
-        { id: 21, filter_id: 3, color_id: 2 },
+        { id: 21, filter_id: 3, color_id: 1 },
         { id: 22, filter_id: 3, color_id: 2 },
         { id: 23, filter_id: 3, color_id: 3 },
         { id: 24, filter_id: 3, color_id: 4 },

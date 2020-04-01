@@ -1,0 +1,26 @@
+{
+  "name": "ven10-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Noble Obioma <nobioma1@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev:server": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "db:rollback:all": "npx knex migrate:rollback",
+    "db:migrate": "npx knex migrate:latest",
+    "db:reset": "npm run db:rollback:all && npm run db:migrate",
+    "db:seed": "npx knex seed:run"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parser": "^2.3.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "knex": "^0.20.13",
+    "pg": "^8.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}

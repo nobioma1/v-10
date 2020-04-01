@@ -4,12 +4,12 @@ You will be working with 2 lists
 
 1. A list of car owners which can be found in an excel file of car owners in the
    United States over several years. Populate this list into a database on a Node
-   JS backend app, you can upload the data manually, using seeds, programatically
-   or any other way you find convinient Click here for the file
+   JS backend app, you can upload the data manually, using seeds, programmatically
+   or any other way you find convenient Click here for the file
 2. A list of filters which will allow you filter the list of car owners based on
    specific parameters in each filter. Populate this list into a database on a
    Node JS backend app, you can upload the data manually, using seeds,
-   programatically or any other way you find convinient API endpoint
+   programmatically or any other way you find convenient API endpoint
 
 ##### Application Workflow
 

@@ -1,10 +1,14 @@
 import styled from 'styled-components';
-import { Card } from '../../shared/Card';
+import { Card } from '../shared/Card';
 
 export const FilterCard = styled(Card)`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+
+  h2 {
+    font-weight: 700;
+  }
 
   ul {
     width: 100%;
@@ -17,6 +21,8 @@ export const Country = styled.li`
   margin: 3px;
   padding: 5px 8px;
   border-radius: 15px;
+  font-weight: lighter;
+  opacity: 0.8;
 `;
 
 export const Color = styled.li`

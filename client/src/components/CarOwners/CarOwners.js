@@ -1,20 +1,22 @@
-import React, { useEffect, useReducer } from 'react';
+import React, {
+  useEffect,
+  useReducer,
+  useRef,
+  useCallback,
+  useState,
+} from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import config from 'root/config';
-import {
-  CarOwnersCard,
-  CarOwnersCardImage,
-  Details,
-  Bio,
-  Header,
-} from './carOwners.style';
-import { Color } from '../Filters/filters.style';
+import { Header } from './carOwners.style';
+import CarOwnersItem from './CarOwnersItem';
+import Loader from '../shared/Loader';
 
 const INITIAL_STATE = {
-  loading: false,
+  loading: true,
   carOwners: [],
+  nextPage: null,
   error: null,
 };
 
@@ -29,7 +31,8 @@ const reducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        carOwners: action.payload,
+        carOwners: [...state.carOwners, ...action.payload.filteredCarOwners],
+        nextPage: action.payload.nextPage,
         error: null,
       };
     case 'SET_ERROR':
@@ -46,19 +49,39 @@ const reducer = (state, action) => {
 const CarOwners = () => {
   const [carOwnersReducer, dispatch] = useReducer(reducer, INITIAL_STATE);
   const history = useHistory();
+  const { filterId } = useParams();
 
-  useEffect(() => {
+  const getPage = (pageNumber = 1) => {
+    dispatch({ type: 'START' });
     axios
-      .get(`${config.API_URL}/car_owners?filter=${1}`)
+      .get(`${config.API_URL}/car_owners?filter=${filterId}&page=${pageNumber}`)
       .then(response => {
-        dispatch({ type: 'START' });
         dispatch({
           type: 'SET_CAR_OWNERS',
-          payload: response.data.filteredCarOwners,
+          payload: response.data,
         });
       })
       .catch(() => dispatch({ type: 'ERROR' }));
+  };
+
+  useEffect(() => {
+    getPage();
   }, []);
+
+  const observer = useRef();
+  const lastElemRef = useCallback(
+    node => {
+      if (carOwnersReducer.loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && carOwnersReducer.nextPage !== null) {
+          getPage(carOwnersReducer.nextPage);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [carOwnersReducer.loading]
+  );
 
   return (
     <div>
@@ -66,63 +89,22 @@ const CarOwners = () => {
         <div onClick={() => history.push('/')}>&larr; Home</div>
         <h2>Filtered Car Owners</h2>
       </Header>
-      {carOwnersReducer.carOwners.length === 0 ? (
+      {!carOwnersReducer.loading && carOwnersReducer.carOwners.length === 0 ? (
         <p>There are no car owners for the selected filter</p>
       ) : (
-        carOwnersReducer.carOwners.map(carOwner => (
-          <CarOwnersCard key={carOwner.id}>
-            <CarOwnersCardImage>
-              <img src="https://img.icons8.com/ios-filled/100/000000/car.png" />
-            </CarOwnersCardImage>
-            <Details>
-              <h2>
-                {carOwner.first_name} {carOwner.last_name}
-              </h2>
-              <section className="car">
-                <div>
-                  <p>
-                    Brand <br />
-                    <span>{carOwner.car_model}</span>{' '}
-                  </p>
-                </div>
-                <div>
-                  <p>
-                    Year
-                    <br />
-                    <span>{carOwner.car_model_year}</span>
-                  </p>
-                </div>
-                <div>
-                  <p>
-                    Color <br />
-                    <Color color={carOwner.car_color} />{' '}
-                  </p>
-                </div>
-              </section>
-              <section className="owner">
-                <div>
-                  <p>Country</p>
-                  <p>{carOwner.country}</p>
-                </div>
-                <div>
-                  <p>Gender</p>
-                  <p>{carOwner.gender}</p>
-                </div>
-                <div>
-                  <p>Job</p>
-                  <p>{carOwner.job_title}</p>
-                </div>
-              </section>
-              <p>
-                Email: <span>{carOwner.email}</span>
-              </p>
-              <Bio>
-                Bio: <span>{carOwner.bio}</span>
-              </Bio>
-            </Details>
-          </CarOwnersCard>
-        ))
+        carOwnersReducer.carOwners.map((carOwner, index) =>
+          carOwnersReducer.carOwners.length !== index + 1 ? (
+            <CarOwnersItem key={carOwner.id} carOwner={carOwner} />
+          ) : (
+            <CarOwnersItem
+              key={carOwner.id}
+              carOwner={carOwner}
+              lastRef={lastElemRef}
+            />
+          )
+        )
       )}
+      {carOwnersReducer.loading && <Loader title="filtered car owners" />}
     </div>
   );
 };

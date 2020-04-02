@@ -52,7 +52,8 @@ describe('Filter Function', () => {
       countries: [],
       colors: [],
     });
-    expect(result).toHaveLength(3);
+    expect(result.filteredCarOwners).toHaveLength(3);
+    expect(result.nextPage).toEqual(null);
   });
 
   test('Should filter data by countries', () => {
@@ -64,18 +65,20 @@ describe('Filter Function', () => {
       countries: ['Nigeria'],
       colors: [],
     });
-    expect(result).toHaveLength(0);
+    expect(result.filteredCarOwners).toHaveLength(0);
+    expect(result.nextPage).toEqual(null);
   });
 
-  test('Should filter data by countries', () => {
+  test('Should filter data by colors', () => {
     const result = filterCarOwners(sampleData, {
       id: 3,
       start_year: 1990,
       end_year: 2002,
       gender: '',
       countries: [],
-      colors: ['Aquamarine', 'Yellow'],
+      colors: ['Aquamarine', 'Black'],
     });
-    expect(result).toHaveLength(0);
+    expect(result.filteredCarOwners).toHaveLength(1);
+    expect(result.nextPage).toEqual(null);
   });
 });

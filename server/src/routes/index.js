@@ -18,11 +18,11 @@ apiRouter.get('/car_owners', async (req, res, next) => {
   try {
     if (req.query.filter) {
       const filter = await getFilterById(parseInt(req.query.filter, 10));
-
+      const page = req.query.page ? parseInt(req.query.page, 10) : 1;
       if (filter) {
         const carOwners = await getCarOwners();
-        const filteredCarOwners = filterCarOwners(carOwners, filter);
-        return res.status(200).json({ filteredCarOwners });
+        const result = filterCarOwners(carOwners, filter, page);
+        return res.status(200).json(result);
       }
       throw new Error('Filter with ID does not exist');
     }

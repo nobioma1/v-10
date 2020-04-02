@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Card } from '../../shared/Card';
+import { Card } from '../shared/Card';
 
 export const CarOwnersCardImage = styled.div`
   width: 20%;
@@ -30,6 +30,13 @@ export const Details = styled.div`
   flex-direction: column;
   justify-content: space-between;
   width: 80%;
+
+  .title {
+    color: gray;
+    span {
+      color: black;
+    }
+  }
 
   section {
     display: flex;

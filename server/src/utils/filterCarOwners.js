@@ -1,6 +1,24 @@
-function filterCarOwners(carOwners, filter, cache = {}) {
+function splitToPages(arr, perPage = 50) {
+  let totalPages = Math.ceil(arr.length / perPage);
+  let currentPage = 1;
+  let start = 0;
+  let end = perPage;
+  let pages = {};
+
+  for (let i = 0; i < totalPages; i++) {
+    const page = arr.slice(start, end);
+    pages[currentPage] = page;
+    currentPage++;
+    start += perPage;
+    end += perPage;
+  }
+
+  return { pages, totalPages };
+}
+
+function filterCarOwners(carOwners, filter, page = 1, cache = {}) {
   // If there is a change in number of car owners reset cache
-  if (cache.carOwnerLength && cache.carOwnerLength !== carOwners.length) {
+  if (cache.carOwnersLength && cache.carOwnersLength !== carOwners.length) {
     cache = {};
   }
 
@@ -20,10 +38,18 @@ function filterCarOwners(carOwners, filter, cache = {}) {
           : true)
       );
     });
-    cache['carOwnerLength'] = carOwners.length;
-    cache[filter.id] = filtered;
+
+    const { pages, totalPages } = splitToPages(filtered);
+    cache['carOwnersLength'] = carOwners.length;
+    cache[filter.id] = {};
+    cache[filter.id]['pages'] = pages;
+    cache[filter.id]['totalPages'] = totalPages;
   }
-  return cache[filter.id];
+
+  return {
+    nextPage: page + 1 > cache[filter.id]['totalPages'] ? null : page + 1,
+    filteredCarOwners: cache[filter.id]['pages'][page] || [],
+  };
 }
 
 module.exports = filterCarOwners;
